@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sport News — Cari Berita</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 6 (gratis) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* transisi halus untuk card */
+        .card-news {
+            transition: all 0.2s ease;
+        }
+        .card-news:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.15);
+        }
+        /* sembunyikan elemen saat filter */
+        .hidden-card {
+            display: none !important;
+        }
+        /* badge animasi kecil */
+        .badge-pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans antialiased flex flex-col min-h-screen">
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo / Brand -->
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-newspaper text-blue-600 text-2xl"></i>
+                    <span class="font-bold text-xl text-slate-800 tracking-tight">Sport<span class="text-blue-600">News</span></span>
+                </div>
+
+                <!-- Desktop menu (kanan) -->
+                <div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+                    <a href="#" class="hover:text-blue-600 transition">Beranda</a>
+                    <a href="#" class="hover:text-blue-600 transition">Olahraga</a>
+                    <a href="#" class="hover:text-blue-600 transition">Internasional</a>
+                    <a href="#" class="hover:text-blue-600 transition">Tentang</a>
+                </div>
+
+                <!-- Mobile hamburger (toggle dummy) -->
+                <div class="md:hidden">
+                    <button id="mobileMenuBtn" class="text-slate-600 hover:text-blue-600 text-xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu (hidden by default) -->
+        <div id="mobileMenu" class="md:hidden hidden bg-white border-t border-slate-100 px-4 py-3 space-y-2 text-sm font-medium text-slate-600">
+            <a href="#" class="block hover:text-blue-600">Beranda</a>
+            <a href="#" class="block hover:text-blue-600">Olahraga</a>
+            <a href="#" class="block hover:text-blue-600">Internasional</a>
+            <a href="#" class="block hover:text-blue-600">Tentang</a>
+        </div>
+    </nav>
+
+    <!-- ========== KONTEN UTAMA ========== -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- HEADER + SEARCH -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 flex items-center gap-3">
+                    <i class="fas fa-futbol text-blue-500"></i> 
+                    Berita Sport
+                </h1>
+                <p class="text-sm text-slate-500 mt-1">
+                    <i class="far fa-calendar-alt mr-1"></i> 
+                    <span id="totalDisplay">10</span> artikel · 
+                    <span id="latestDateDisplay">2020-01-31</span>
+                </p>
+            </div>
+
+            <!-- Form pencarian -->
+            <div class="relative w-full sm:w-72 md:w-80">
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Cari judul, penulis..." 
+                    class="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition text-sm"
+                />
+                <!-- tombol clear (muncul saat ada teks) -->
+                <button id="clearSearchBtn" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 hidden text-sm">
+                    <i class="fas fa-times-circle"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Info hasil pencarian (dinamis) -->
+        <div id="searchResultInfo" class="text-sm text-slate-500 mb-4 flex items-center gap-2">
+            <span id="resultCount">10</span> artikel ditemukan
+            <span id="searchQueryDisplay" class="text-slate-400 text-xs italic ml-1"></span>
+        </div>
+
+        <!-- GRID berita -->
+        <div id="newsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- card akan di-render oleh JavaScript -->
+        </div>
+
+        <!-- Pesan jika tidak ada hasil -->
+        <div id="noResultMessage" class="hidden text-center py-12 text-slate-400">
+            <i class="fas fa-search-minus text-4xl mb-3 block"></i>
+            <p class="text-lg font-medium">Tidak ada berita yang cocok</p>
+            <p class="text-sm">Coba gunakan kata kunci lain</p>
+        </div>
+
+        <!-- Paginasi info (dari API) -->
+        <div class="mt-10 flex justify-center">
+            <div class="bg-white border border-slate-200 rounded-full px-6 py-3 text-sm text-slate-600 shadow-sm inline-flex items-center gap-4 flex-wrap justify-center">
+                <span><i class="fas fa-arrow-right text-blue-400 mr-1"></i> Menampilkan <span id="shownCount">10</span></span>
+                <span class="text-slate-300">|</span>
+                <span>next: <span id="nextToken" class="font-mono bg-slate-100 px-2 py-0.5 rounded">30</span></span>
+                <span class="text-slate-300">|</span>
+                <span id="eofStatus" class="flex items-center gap-1">
+                    <i class="fas fa-circle text-green-400 text-[8px]"></i> masih ada
+                </span>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="bg-white border-t border-slate-200 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-newspaper text-blue-500"></i>
+                    <span>© mhd rafli 2026 SportNews — Fake API Demo</span>
+                </div>
+                <div class="flex gap-5 text-slate-400">
+                    <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-youtube"></i></a>
+                </div>
+                <div class="flex gap-4 text-xs">
+                    <a href="#" class="hover:text-blue-600">Kebijakan</a>
+                    <a href="#" class="hover:text-blue-600">Kontak</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========== JAVASCRIPT ========== -->
+    <script>
+        // ---- DATA API (langsung dari soal) ----
+        const apiResponse = {
+            "news": [
+                { "id": 0, "headline": "Customizable encompassing extranet", "abstract": "Truth part experience clear responsibility. Edge hot discover military other. It long sister.", "body": "<p>Standard can finish well oil half pass. Administration air become because world. Often week size I tonight fish whole. Consider site fund success. Debate information success finally. Far charge better. Range benefit second wind wish during. Natural which public authority. Gun job doctor purpose much. Worker sport two. Its about at issue democratic after lawyer. Left green require like audience chance beautiful. Dark bill respond budget interesting event lose. Must network next become because whom. Become value customer gun difficult. Sit hotel central thousand beyond board. Business he mind home action. Respond generation sometimes feel. Myself strong century leg. Energy official color might can may boy. Dark explain case good notice interview.<\/p>", "author": "Jon Oliver", "section": "Sport", "date": "2020-01-01T06:30:30", "article_uri": "http:\/\/fakenews.squirro.com\/article\/html\/sport\/0.html", "pfd_uri": "http:\/\/fakenews.squirro.com\/article\/pdf\/sport\/0.pdf" },
+                { "id": 2, "headline": "Multi-lateral uniform hierarchy", "abstract": "American get little program foot write. Any end charge cause become idea. Wife no myself much young.", "body": "<p>Put walk attorney. Big food glass place radio include. Stop instead college dream age grow. Shake form thing rule ground money beautiful. State idea different detail off police. Discussion paper human safe they difference arm. Color soldier statement. Compare participant authority organization provide operation along. They realize whatever page. Debate court story quite eye easy sign. Condition green the mouth. Staff would consumer when budget nation. Anyone brother me reveal church resource person. Social way place generation edge report. Really serve home we increase lose. Goal clear such seek trial exactly. Student home another phone hand. Another responsibility color way hospital several agency ten. Each student reveal hotel. Let decision year both. Wide good wear wife close popular. Serious build state. Between project color bar seat management interesting. Might true still not. Various debate card mean condition spring American race.<\/p>", "author": "Robert Coffey", "section": "Sport", "date": "2020-01-03T02:50:50", "article_uri": "http:\/\/fakenews.squirro.com\/article\/html\/sport\/2.html", "pfd_uri": "http:\/\/fakenews.squirro.com\/article\/pdf\/sport\/2.pdf" },
+                { "id": 4, "headline": "Proactive attitude-oriented portal", "abstract": "Together this national fund sign. Write one program.\nForget news quickly report focus. Production she finish listen return hold hot politics. Natural ten one these.", "body": "<p>West without thought most. Him speak ok particularly more act light. Plant catch station story yourself education. Natural feel when establish occur. Prove including paper yourself feeling no. House suffer lot bad big. Have though gun right reality hope.<\/p>", "author": "Brian Smith", "section": "Sport", "date": "2020-01-05T22:34:34", "article_uri": "http:\/\/fakenews.squirro.com\/article\/html\/sport\/4.html", "pfd_uri": "http:\/\/fakenews.squirro.com\/article\/pdf\/sport\/4.pdf" },
+                { "id": 5, "headline": "Ergonomic content-based initiative", "abstract": "Church have popular smile interesting environmental right. Rather miss mission.\nDifferent leader team year receive whether. Real other every think physical itself create.", "body": "<p>Trouble especially avoid very history. Player purpose anything across light sound operation. Bad exist it let born paper. Make itself itself lot here. Rate campaign buy decision. Face young beyond it. Education so may cost say. Low thousand treatment bit easy indicate. Reason discussion country prove suggest Congress suggest. True example feel. Enter listen person participant seven place. Vote wall season sense break result. Top Mrs not. Occur inside sell she today prove. Ground fight manager sort hair finish build. Interesting rich talk must. Along unit picture bring however player stage sort. Arm she visit report treatment enough go. Project seek which enter. Continue until performance treatment movement wrong great.<\/p>", "author": "Jillian Mcpherson", "section": "Sport", "date": "2020-01-06T14:12:12", "article_uri": "http:\/\/fakenews.squirro.com\/article\/html\/sport\/5.html", "pfd_uri": "http:\/\/fakenews.squirro.com\/article\/pdf\/sport\/5.pdf" },
+                { "id": 11, "headline": "Versatile explicit orchestration", "abstract": "Drug think assume Mr. Off crime participant popular treatment.\nPlant around purpose step remember stand toward. Tv weight go.", "body": "<p>Hear few too near race. Step parent yourself forget ready teach brother. Door cup federal week education control. Figure big his plan south. Network gun during hold recently consumer other. City executive upon face. Home sell class popular treatment me. No defense his your rather several Mr. Store recent fly develop finally study fight. Necessary street at. Court time ground old nation. Drop family then if. Actually should letter consumer. Occur ready national say. Within low group. Year everyone child will. Make never bill gas pay down. Describe southern southern kid scientist. Firm writer yard physical soldier dog agreement. Admit base bag American tell purpose growth. Stop radio down leader. Manager voice above. Economic style forget in business sell note. Campaign window news actually hope leg. Water action rather bill high. As political too. Main walk science. Into either guess grow strong pretty.<\/p>", "author": "Jon Oliver", "section": "Sport", "date": "2020-01-12T14:41:41", "article_uri": "http:\/\/fakenews.squirro.com\/article\/html\/sport\/11.html", "pfd_uri": "http:\/\/fakenews.squirro.com\/article\/pdf\/sport\/11.pdf" },
+                { "id": 15, "headline": "Reverse-engineered transitional help-desk", "abstract": "Half poor outside Democrat long church lot research. Fear such own personal during none bar. Series check also risk that. Me own huge politics relationship first once green.", "body": "<p>Really daughter all. Sister entire but today western myself. Sit culture firm pressure customer. Court result pay level rock sea. Maintain also store often side. Relationship owner student almost. Add goal lay what opportunity style. Student foreign whole another reality expect create task. Season necessary participant benefit up personal. Democrat message eight. Community near rate meet watch left others lawyer. Yet matter know image green.<\/p>", "author": "Robert Coffey", "section": "Sport", "date": "2020-01-16T18:19:19", "article_uri": "http:\/\/fakenews.squirro.com\/article\/html\/sport\/15.html", "pfd_uri": "http:\/\/fakenews.squirro.com\/article\/pdf\/sport\/15.pdf" },
+                { "id": 17, "headline": "Seamless demand-driven function", "abstract": "Call clear cut law better spend future practice. Decade difference up third treat risk forget. Down open soldier up reveal worry chance.\nCover including news. Good as list charge threat.", "body": "<p>Available show investment dream somebody between reveal. Under he why degree nearly street reflect. Week discuss himself even hot. How finish include company. Say none already value defense every head career. Race adult economic light. Wear various cut recent reduce. Lay financial necessary hit card continue thank. Bed police truth once onto fear. Put leader amount first back animal describe. Full happen much end green. However choice stand bed thing. Buy usually after data hard pattern lay. Point defense final. Process yes evening traditional. East four federal organization who. Fight institution continue simple. Trade it accept day reach growth. Political care speak enter bill baby agreement.<\/p>", "author": "Brian Smith", "section": "Sport", "date": "2020-01-18T05:33:33", "article_uri": "http:\/\/fakenews.squirro.com\/article\/html\/sport\/17.html", "pfd_uri": "http:\/\/fakenews.squirro.com\/article\/pdf\/sport\/17.pdf" },
+                { "id": 18, "headline": "Enterprise-wide executive success", "abstract": "Tax positive candidate while early shoulder. Against father person to. Particular father adult ball too away once charge.", "body": "<p>Say fly both some attorney individual. Attack product tree ball man star. Section only prevent Mr pressure. Task among program.<\/p>", "author": "Cynthia White", "section": "Sport", "date": "2020-01-19T01:05:05", "article_uri": "http:\/\/fakenews.squirro.com\/article\/html\/sport\/18.html", "pfd_uri": "http:\/\/fakenews.squirro.com\/article\/pdf\/sport\/18.pdf" },
+                { "id": 24, "headline": "Multi-tiered grid-enabled core", "abstract": "Late politics lay owner real candidate body. Left talk every room. Ahead citizen marriage daughter term research agency list.", "body": "<p>Another price dinner billion. Like name picture matter kind unit although discussion. Treat audience food rise. Compare federal design kitchen color. Son forward admit pressure military with. Consider director listen enough cultural take true. Investment above fine coach area around affect. See if end yeah great space. Kitchen red worry issue husband control interview. International girl side table. Effort seem picture positive follow bank adult fact. Will stand improve half million personal of. Newspaper deep show day still. Color order back teacher soon to start. Street contain life into agree. Soon agree contain service turn international behavior.<\/p>", "author": "Shawn Lee", "section": "Sport", "date": "2020-01-25T01:49:49", "article_uri": "http:\/\/fakenews.squirro.com\/article\/html\/sport\/24.html", "pfd_uri": "http:\/\/fakenews.squirro.com\/article\/pdf\/sport\/24.pdf" },
+                { "id": 30, "headline": "Programmable static forecast", "abstract": "Author produce discussion fill play. Throughout as full wait difference plan cultural. Step early inside east area relate them.", "body": "<p>Beat very talk old some. Between experience kid kitchen remain mother upon. Enjoy budget create avoid leg politics father. Themselves information peace both bag culture. Nice campaign nice magazine cut current dark. Sound ball painting employee. I carry together. Way style include mother. Will practice member toward TV term. Coach economic church first. Final central support force commercial top. Other own interview arrive. Rich accept over value various. Blood majority various media institution tonight budget left. Price lead yard general. Suffer rule step cut read Congress industry. Term serious traditional forget treatment maintain. Glass must animal pull point task. Even some better husband. Fly song laugh effect thing glass member. Situation whole item share purpose voice year. Respond case suggest heart environmental. Article call drop senior. Impact hold candidate month base worry. Eat forget see parent relate family. Individual probably through include analysis author.<\/p>", "author": "John Perez", "section": "Sport", "date": "2020-01-31T04:03:03", "article_uri": "http:\/\/fakenews.squirro.com\/article\/html\/sport\/30.html", "pfd_uri": "http:\/\/fakenews.squirro.com\/article\/pdf\/sport\/30.pdf" }
+            ],
+            "count": 10,
+            "next": 30,
+            "eof": false
+        };
+
+        // ---- GLOBAL STATE ----
+        let currentData = apiResponse.news; // array asli
+        let filteredData = [...currentData];
+
+        // ---- DOM refs ----
+        const grid = document.getElementById('newsGrid');
+        const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearSearchBtn');
+        const resultCount = document.getElementById('resultCount');
+        const searchQueryDisplay = document.getElementById('searchQueryDisplay');
+        const noResultMsg = document.getElementById('noResultMessage');
+
+        // Info tambahan
+        const totalDisplay = document.getElementById('totalDisplay');
+        const latestDateDisplay = document.getElementById('latestDateDisplay');
+        const shownCount = document.getElementById('shownCount');
+        const nextToken = document.getElementById('nextToken');
+        const eofStatus = document.getElementById('eofStatus');
+
+        // ---- helper: render card ----
+        function renderCards(items) {
+            grid.innerHTML = '';
+            if (!items || items.length === 0) {
+                noResultMsg.classList.remove('hidden');
+                return;
+            }
+            noResultMsg.classList.add('hidden');
+
+            items.forEach(item => {
+                // preview body (tanpa tag)
+                const temp = document.createElement('div');
+                temp.innerHTML = item.body;
+                const textBody = temp.textContent || temp.innerText || '';
+                const preview = textBody.length > 140 ? textBody.substring(0, 140) + '…' : textBody;
+
+                const dateObj = new Date(item.date);
+                const formattedDate = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+
+                const card = document.createElement('div');
+                card.className = 'card-news bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col';
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start gap-2 mb-2">
+                        <span class="inline-flex items-center gap-1 bg-blue-50 text-blue-700 text-[11px] font-semibold px-3 py-1 rounded-full uppercase tracking-wide">
+                            <i class="fas fa-tag text-[10px]"></i> ${item.section}
+                        </span>
+                        <span class="text-xs text-slate-400 whitespace-nowrap"><i class="far fa-calendar-alt mr-1"></i>${formattedDate}</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 leading-tight mb-2">${item.headline}</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-3 flex-1">${item.abstract}</p>
+                    <div class="bg-slate-50 rounded-xl px-3 py-2 text-xs text-slate-500 border-l-2 border-blue-300 mb-4 line-clamp-3">
+                        ${preview}
+                    </div>
+                    <div class="flex items-center justify-between mt-auto pt-3 border-t border-slate-100 text-sm">
+                        <span class="flex items-center gap-1.5 text-slate-700 font-medium">
+                            <i class="fas fa-user-pen text-blue-500 text-xs"></i> ${item.author}
+                        </span>
+                        <div class="flex gap-3 text-xs">
+                            <a href="${item.article_uri}" target="_blank" class="text-blue-500 hover:text-blue-700 flex items-center gap-1"><i class="fas fa-globe"></i> HTML</a>
+                            <a href="${item.pfd_uri}" target="_blank" class="text-blue-500 hover:text-blue-700 flex items-center gap-1"><i class="fas fa-file-pdf"></i> PDF</a>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ---- update info tambahan (total, next, eof) ----
+        function updateMeta() {
+            totalDisplay.textContent = apiResponse.news.length;
+            shownCount.textContent = filteredData.length;
+            nextToken.textContent = apiResponse.next;
+            eofStatus.innerHTML = apiResponse.eof 
+                ? '<i class="fas fa-circle text-gray-400 text-[8px]"></i> akhir data' 
+                : '<i class="fas fa-circle text-green-400 text-[8px]"></i> masih ada';
+
+            if (apiResponse.news.length > 0) {
+                const last = apiResponse.news[apiResponse.news.length - 1];
+                const d = new Date(last.date);
+                latestDateDisplay.textContent = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+            }
+        }
+
+        // ---- fungsi filter (search) ----
+        function applyFilter(query) {
+            const q = query.trim().toLowerCase();
+            if (q === '') {
+                filteredData = [...currentData];
+            } else {
+                filteredData = currentData.filter(item => 
+                    item.headline.toLowerCase().includes(q) ||
+                    item.abstract.toLowerCase().includes(q) ||
+                    item.author.toLowerCase().includes(q) ||
+                    item.section.toLowerCase().includes(q)
+                );
+            }
+
+            // update tampilan
+            renderCards(filteredData);
+            resultCount.textContent = filteredData.length;
+            searchQueryDisplay.textContent = q ? `(keyword: "${q}")` : '';
+
+            // tampilkan/sembunyikan tombol clear
+            clearBtn.classList.toggle('hidden', q === '');
+        }
+
+        // ---- event listener search ----
+        searchInput.addEventListener('input', (e) => {
+            applyFilter(e.target.value);
+        });
+
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            applyFilter('');
+            searchInput.focus();
+        });
+
+        // ---- mobile menu toggle ----
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        });
+
+        // ---- inisialisasi ----
+        renderCards(apiResponse.news);
+        updateMeta();
+        resultCount.textContent = apiResponse.news.length;
+
+        // set initial latest date from data
+        if (apiResponse.news.length) {
+            const last = apiResponse.news[apiResponse.news.length - 1];
+            const d = new Date(last.date);
+            latestDateDisplay.textContent = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+    </script>
+</body>
+</html>
