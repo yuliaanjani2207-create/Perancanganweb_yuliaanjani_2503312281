@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Status kehadiran mahasiswa: riwayat absen + persentase per matkul — controller: KehadiranMhsController -->
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.KehadiranMhsController" spacing="12">
+
+    <Label text="Status Kehadiran Saya" styleClass="page-title"/>
+
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <Label text="Filter mata kuliah:" styleClass="muted"/>
+        <ComboBox fx:id="cbMatkul" prefWidth="360" onAction="#onFilterChanged"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Ekspor CSV" onAction="#onExportCsv" styleClass="btn-ghost"/>
+    </HBox>
+
+    <VBox styleClass="panel" spacing="8" VBox.vgrow="ALWAYS">
+        <Label text="RIWAYAT ABSENSI SAYA" styleClass="section"/>
+        <TableView fx:id="tableRiwayat" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn text="Kode MK" prefWidth="90">
+                    <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="kodeMatkul"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Mata Kuliah" prefWidth="180">
+                    <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="namaMatkul"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Pertemuan" prefWidth="90">
+                    <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="pertemuanKe"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Tanggal" prefWidth="100">
+                    <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="tanggal"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Waktu Absen" prefWidth="150">
+                    <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="waktuAbsen"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Status" prefWidth="90">
+                    <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="status"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Metode" prefWidth="80">
+                    <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="metode"/></cellValueFactory>
+                </TableColumn>
+            </columns>
+            <columnResizeMode>CONSTRAINED_RESIZE_POLICY</columnResizeMode>
+        </TableView>
+    </VBox>
+
+    <VBox styleClass="panel" spacing="8">
+        <Label text="PERSENTASE KEHADIRAN PER MATA KULIAH" styleClass="section"/>
+        <TableView fx:id="tablePersen" prefHeight="220">
+            <columns>
+                <TableColumn text="Mata Kuliah" prefWidth="200">
+                    <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="matkul"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Total Sesi" prefWidth="90">
+                    <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="totalSesi"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Hadir" prefWidth="70">
+                    <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="hadir"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Terlambat" prefWidth="90">
+                    <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="terlambat"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Tidak Hadir" prefWidth="100">
+                    <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="tidakHadir"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn text="% Kehadiran" prefWidth="110">
+                    <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="persen"/></cellValueFactory>
+                </TableColumn>
+            </columns>
+            <columnResizeMode>CONSTRAINED_RESIZE_POLICY</columnResizeMode>
+        </TableView>
+        <Label wrapText="true" styleClass="muted"
+               text="Persentase dihitung dari sesi yang sudah berstatus SELESAI. Minimal kehadiran umum perkuliahan adalah 75%."/>
+    </VBox>
+</VBox>

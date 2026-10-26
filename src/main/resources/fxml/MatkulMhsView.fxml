@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Mata kuliah milik mahasiswa + jadwal sesinya — controller: MatkulMhsController -->
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.MatkulMhsController" spacing="12">
+
+    <Label text="Mata Kuliah Saya" styleClass="page-title"/>
+
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <Label text="Pilih mata kuliah:" styleClass="muted"/>
+        <ComboBox fx:id="cbMatkul" prefWidth="420" onAction="#onChanged"/>
+    </HBox>
+
+    <VBox styleClass="panel" spacing="10" VBox.vgrow="ALWAYS">
+        <Label text="INFO &amp; JADWAL PERTEMUAN" styleClass="section"/>
+        <Label fx:id="lblInfo" wrapText="true" text="Memuat data..." VBox.vgrow="ALWAYS"/>
+        <Label wrapText="true" styleClass="muted"
+               text="Status sesi: TERJADWAL (belum dimulai), AKTIF (QR dinamis sedang ditayangkan — silakan scan!), SELESAI (absensi ditutup)."/>
+    </VBox>
+</VBox>

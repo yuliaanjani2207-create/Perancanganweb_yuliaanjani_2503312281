@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Halaman 3: DATA MAHASISWA (controller: MahasiswaController extends CrudController) -->
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.MahasiswaController" spacing="12">
+
+    <Label text="Pengelolaan Data Mahasiswa" styleClass="page-title"/>
+
+    <!-- Baris pencarian -->
+    <HBox spacing="8">
+        <TextField fx:id="txtSearch" promptText="Cari berdasarkan NIM atau nama..." prefWidth="320"
+                   onAction="#onSearch"/>
+        <Button text="Cari" onAction="#onSearch" styleClass="btn-primary"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Ekspor CSV" onAction="#onExportCsv" styleClass="btn-ghost"/>
+    </HBox>
+
+    <!-- Tabel data -->
+    <TableView fx:id="table" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn text="ID" prefWidth="55">
+                <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="id"/></cellValueFactory>
+            </TableColumn>
+            <TableColumn text="NIM" prefWidth="110">
+                <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="nim"/></cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Nama" prefWidth="180">
+                <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="nama"/></cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Program Studi" prefWidth="150">
+                <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="prodi"/></cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Email" prefWidth="180">
+                <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="email"/></cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Telepon" prefWidth="120">
+                <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="telepon"/></cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Status" prefWidth="90">
+                <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="status"/></cellValueFactory>
+            </TableColumn>
+        </columns>
+        <columnResizeMode>CONSTRAINED_RESIZE_POLICY</columnResizeMode>
+    </TableView>
+
+    <!-- Formulir input -->
+    <VBox styleClass="panel" spacing="10">
+        <Label text="Formulir Mahasiswa (biarkan ID kosong untuk data baru)" styleClass="section"/>
+        <GridPane hgap="10" vgap="8">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="16"/><ColumnConstraints percentWidth="28"/>
+                <ColumnConstraints percentWidth="22"/><ColumnConstraints percentWidth="17"/>
+                <ColumnConstraints percentWidth="17"/>
+            </columnConstraints>
+            <Label text="ID" GridPane.rowIndex="0" styleClass="muted"/>
+            <Label text="NIM" GridPane.columnIndex="1" styleClass="muted"/>
+            <Label text="Nama" GridPane.columnIndex="2" styleClass="muted"/>
+            <Label text="Program Studi" GridPane.columnIndex="3" styleClass="muted"/>
+            <Label text="Status" GridPane.columnIndex="4" styleClass="muted"/>
+
+            <TextField fx:id="txtId" editable="false" promptText="(otomatis)" GridPane.rowIndex="1"/>
+            <TextField fx:id="txtNim" promptText="mis. 211101001" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <TextField fx:id="txtNama" promptText="Nama lengkap" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+            <TextField fx:id="txtProdi" promptText="mis. Informatika" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+            <ComboBox fx:id="cbStatus" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="4"/>
+
+            <Label text="Email" GridPane.rowIndex="2" styleClass="muted"/>
+            <Label text="Telepon" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="muted"/>
+            <TextField fx:id="txtEmail" promptText="opsional" GridPane.rowIndex="3"/>
+            <TextField fx:id="txtTelepon" promptText="opsional" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        </GridPane>
+        <HBox spacing="8">
+            <Button text="Baru" onAction="#onNew" styleClass="btn-ghost"/>
+            <Button text="Pilih ke Form (Ubah)" onAction="#onEdit" styleClass="btn-warning"/>
+            <Button text="Simpan" onAction="#onSave" styleClass="btn-success"/>
+            <Button text="Hapus" onAction="#onDelete" styleClass="btn-danger"/>
+        </HBox>
+    </VBox>
+</VBox>
