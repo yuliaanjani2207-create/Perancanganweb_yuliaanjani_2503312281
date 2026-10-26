@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Halaman 2: DASHBOARD DOSEN (controller: DashboardDosenController) -->
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.DashboardDosenController" spacing="16">
+
+    <Label fx:id="lblWelcome" styleClass="page-title"/>
+    <Label text="Ringkasan sistem absensi QR Code dinamis" styleClass="muted"/>
+
+    <GridPane hgap="14" vgap="14">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="25"/><ColumnConstraints percentWidth="25"/>
+            <ColumnConstraints percentWidth="25"/><ColumnConstraints percentWidth="25"/>
+        </columnConstraints>
+
+        <VBox styleClass="card, card-icon-accent" GridPane.columnIndex="0">
+            <Label fx:id="cardMahasiswa" styleClass="card-value"/>
+            <Label text="Total Mahasiswa" styleClass="card-label"/>
+        </VBox>
+        <VBox styleClass="card, card-icon-accent" GridPane.columnIndex="1">
+            <Label fx:id="cardMatkul" styleClass="card-value"/>
+            <Label text="Mata Kuliah Diampu" styleClass="card-label"/>
+        </VBox>
+        <VBox styleClass="card, card-icon-accent" GridPane.columnIndex="2">
+            <Label fx:id="cardSesiAktif" styleClass="card-value"/>
+            <Label text="Sesi Absensi Aktif" styleClass="card-label"/>
+        </VBox>
+        <VBox styleClass="card, card-icon-accent" GridPane.columnIndex="3">
+            <Label fx:id="cardHadirHariIni" styleClass="card-value"/>
+            <Label text="Kehadiran Hari Ini" styleClass="card-label"/>
+        </VBox>
+    </GridPane>
+
+    <VBox styleClass="panel" spacing="8">
+        <Label text="Jadwal sesi hari ini" styleClass="section"/>
+        <Label fx:id="lblSesiHariIni" wrapText="true" styleClass="info-label"/>
+    </VBox>
+</VBox>

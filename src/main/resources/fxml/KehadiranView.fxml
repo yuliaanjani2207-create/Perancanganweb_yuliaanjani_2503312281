@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Halaman 10: DAFTAR KEHADIRAN satu sesi (controller: KehadiranController) -->
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.KehadiranController" spacing="12">
+
+    <Label text="Daftar Kehadiran Per Sesi" styleClass="page-title"/>
+
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <Label text="Sesi:" styleClass="muted"/>
+        <ComboBox fx:id="cbSesi" prefWidth="420" onAction="#onSesiChanged"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Ekspor CSV" onAction="#onExportCsv" styleClass="btn-ghost"/>
+    </HBox>
+
+    <Label fx:id="lblInfo" wrapText="true" styleClass="muted"/>
+
+    <HBox spacing="12" VBox.vgrow="ALWAYS">
+        <VBox styleClass="panel" spacing="8" HBox.hgrow="ALWAYS">
+            <Label text="MAHASISWA SUDAH HADIR (klik dua baris untuk koreksi/hapus)" styleClass="section"/>
+            <TableView fx:id="tableHadir" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn text="NIM" prefWidth="100">
+                        <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="nim"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Nama" prefWidth="170">
+                        <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="namaMahasiswa"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Waktu Absen" prefWidth="150">
+                        <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="waktuAbsen"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Status" prefWidth="90">
+                        <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="status"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Metode" prefWidth="80">
+                        <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="metode"/></cellValueFactory>
+                    </TableColumn>
+                </columns>
+                <columnResizeMode>CONSTRAINED_RESIZE_POLICY</columnResizeMode>
+            </TableView>
+        </VBox>
+
+        <VBox styleClass="panel" spacing="8" HBox.hgrow="ALWAYS">
+            <Label text="MAHASISWA BELUM HADIR" styleClass="section"/>
+            <TableView fx:id="tableBelum" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn text="NIM" prefWidth="110">
+                        <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="nim"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Nama" prefWidth="200">
+                        <cellValueFactory><javafx.scene.control.cell.PropertyValueFactory property="namaMahasiswa"/></cellValueFactory>
+                    </TableColumn>
+                </columns>
+                <columnResizeMode>CONSTRAINED_RESIZE_POLICY</columnResizeMode>
+            </TableView>
+        </VBox>
+    </HBox>
+</VBox>

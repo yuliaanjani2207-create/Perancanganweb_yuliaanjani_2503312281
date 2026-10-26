@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Profil mahasiswa (lihat saja) — controller: ProfilMhsController -->
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.ProfilMhsController" spacing="12">
+
+    <Label text="Profil Saya" styleClass="page-title"/>
+
+    <VBox styleClass="panel" spacing="10">
+        <Label text="DATA PRIBADI MAHASISWA" styleClass="section"/>
+        <GridPane hgap="12" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="25"/><ColumnConstraints percentWidth="75"/>
+            </columnConstraints>
+            <Label text="NIM" styleClass="muted"/>
+            <Label fx:id="lblNim" GridPane.columnIndex="1" text="-"/>
+
+            <Label text="Nama Lengkap" GridPane.rowIndex="1" styleClass="muted"/>
+            <Label fx:id="lblNama" GridPane.rowIndex="1" GridPane.columnIndex="1" text="-"/>
+
+            <Label text="Program Studi" GridPane.rowIndex="2" styleClass="muted"/>
+            <Label fx:id="lblProdi" GridPane.rowIndex="2" GridPane.columnIndex="1" text="-"/>
+
+            <Label text="Email" GridPane.rowIndex="3" styleClass="muted"/>
+            <Label fx:id="lblEmail" GridPane.rowIndex="3" GridPane.columnIndex="1" text="-"/>
+
+            <Label text="Telepon" GridPane.rowIndex="4" styleClass="muted"/>
+            <Label fx:id="lblTelepon" GridPane.rowIndex="4" GridPane.columnIndex="1" text="-"/>
+
+            <Label text="Status" GridPane.rowIndex="5" styleClass="muted"/>
+            <Label fx:id="lblStatus" GridPane.rowIndex="5" GridPane.columnIndex="1" text="-"/>
+        </GridPane>
+        <Label wrapText="true" styleClass="muted"
+               text="Untuk mengubah data profil, hubungi admin program studi melalui menu Data Mahasiswa oleh dosen/admin."/>
+    </VBox>
+</VBox>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Halaman 13: PENGATURAN APLIKASI (controller: PengaturanController) -->
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.PengaturanController" spacing="12">
+
+    <Label text="Pengaturan Aplikasi" styleClass="page-title"/>
+
+    <!-- Masa berlaku QR & backup -->
+    <VBox styleClass="panel" spacing="10">
+        <Label text="KEAMANAN QR CODE DINAMIS" styleClass="section"/>
+        <HBox spacing="8" alignment="CENTER_LEFT">
+            <Label text="Masa berlaku QR (detik, 10–600):" styleClass="muted"/>
+            <TextField fx:id="txtTtl" prefWidth="90"/>
+            <Button text="Simpan Pengaturan" onAction="#onSaveSettings" styleClass="btn-primary"/>
+        </HBox>
+        <CheckBox fx:id="cbAutoBackup" text="Cadangkan database secara otomatis saat aplikasi ditutup (backup)"/>
+        <Label wrapText="true" styleClass="muted"
+               text="Token QR ditandatangani HMAC-SHA256 dengan kunci rahasia yang tersimpan lokal di file terpisah (data/secret.key) — kunci TIDAK pernah dimasukkan ke dalam QR Code."/>
+    </VBox>
+
+    <Separator/>
+
+    <!-- Ganti password -->
+    <VBox styleClass="panel" spacing="10">
+        <Label text="GANTI PASSWORD AKUN SAYA" styleClass="section"/>
+        <HBox spacing="8" alignment="CENTER_LEFT">
+            <Label text="Password baru" styleClass="muted"/>
+            <PasswordField fx:id="txtPassBaru" prefWidth="220" promptText="minimal 6 karakter"/>
+            <Label text="Ulangi password" styleClass="muted"/>
+            <PasswordField fx:id="txtPassUlang" prefWidth="220"/>
+            <Button text="Ubah Password" onAction="#onChangePassword" styleClass="btn-warning"/>
+        </HBox>
+        <Label wrapText="true" styleClass="muted"
+               text="Password disimpan sebagai hash BCrypt pada tabel users — tidak pernah disimpan sebagai teks biasa."/>
+    </VBox>
+
+    <Separator/>
+
+    <!-- Backup manual -->
+    <VBox styleClass="panel" spacing="10">
+        <Label text="CADANGAN DATABASE (BACKUP)" styleClass="section"/>
+        <HBox spacing="8">
+            <Button text="Backup Sekarang" onAction="#onBackupNow" styleClass="btn-success"/>
+        </HBox>
+        <Label wrapText="true" styleClass="muted"
+               text="Salinan seluruh data (mahasiswa, sesi, absensi) disimpan ke folder data/backup/. Simpan file ini di tempat aman, misalnya flashdisk atau cloud storage."/>
+    </VBox>
+</VBox>

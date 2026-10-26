@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Halaman 9: PEMINDAIAN QR CODE OLEH MAHASISWA (controller: ScanController)
+     Kamera web + mode pengujian (muat gambar QR dari file / tempel payload). -->
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.ScanController" spacing="12">
+
+    <Label text="Scan QR Code Absensi" styleClass="page-title"/>
+    <Label wrapText="true" styleClass="muted"
+           text="Arahkan kamera laptop/webcam ke QR Code dinamis yang ditayangkan dosen pada menu 'Sesi Absensi &amp; QR'. Jika komputer tidak memiliki kamera, gunakan MODE PENGUJIAN: pindai dari file gambar PNG/JPG atau tempel payload. Mode pengujian BUKAN bukti keamanan absensi pada penggunaan nyata."/>
+
+    <HBox spacing="16" VBox.vgrow="ALWAYS">
+        <VBox styleClass="panel" spacing="10" prefWidth="420" alignment="TOP_CENTER">
+            <Label text="PRATINJAU KAMERA" styleClass="section"/>
+            <ImageView fx:id="camView" fitWidth="380" fitHeight="300" preserveRatio="true"
+                       style="-fx-background-color: #10182b;"/>
+            <Label fx:id="lblCamStatus" styleClass="muted" text="Kamera mati."/>
+            <GridPane hgap="8" vgap="8">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="50"/><ColumnConstraints percentWidth="50"/>
+                </columnConstraints>
+                <Button text="▶ Nyalakan Kamera" onAction="#onStartCamera" styleClass="btn-success" maxWidth="Infinity"/>
+                <Button text="■ Matikan Kamera" GridPane.columnIndex="1" onAction="#onStopCamera" styleClass="btn-danger" maxWidth="Infinity"/>
+                <Button text="Pindai dari File Gambar (Mode Uji)" GridPane.rowIndex="1" onAction="#onScanFromFile" styleClass="btn-primary" maxWidth="Infinity" GridPane.columnSpan="2"/>
+                <Button text="Tempel Payload QR (Mode Uji)" GridPane.rowIndex="2" onAction="#onPastePayload" styleClass="btn-ghost" maxWidth="Infinity" GridPane.columnSpan="2"/>
+            </GridPane>
+        </VBox>
+
+        <VBox styleClass="panel" spacing="10" HBox.hgrow="ALWAYS">
+            <Label text="HASIL PEMINDAIAN" styleClass="section"/>
+            <Label fx:id="lblResult" wrapText="true" text="Pemindai siap." styleClass="result-label"/>
+            <Region VBox.vgrow="ALWAYS"/>
+            <Label text="Log aktivitas scan sesi ini:" styleClass="muted"/>
+            <TextArea fx:id="txtLog" editable="false" wrapText="true" VBox.vgrow="ALWAYS"
+                      promptText="Hasil setiap pemindaian akan muncul di sini..."/>
+        </VBox>
+    </HBox>
+</VBox>

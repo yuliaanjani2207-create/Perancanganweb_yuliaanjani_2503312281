@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Halaman 1: LOGIN (controller: controller.LoginController) -->
+<StackPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="controller.LoginController" styleClass="login-root">
+    <VBox alignment="CENTER" spacing="0">
+        <VBox styleClass="login-card" spacing="14" maxWidth="380" prefWidth="380">
+            <Label text="APLIKASI ABSENSI MAHASISWA" styleClass="login-title"/>
+            <Label wrapText="true" styleClass="login-subtitle"
+                   text="Absensi berbasis QR Code dinamis pada setiap pertemuan perkuliahan."/>
+
+            <VBox spacing="6">
+                <Label text="Username" styleClass="muted"/>
+                <TextField fx:id="txtUsername" promptText="NIP dosen / NIM mahasiswa"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="Password" styleClass="muted"/>
+                <PasswordField fx:id="txtPassword" promptText="Masukkan password"/>
+            </VBox>
+
+            <HBox spacing="10">
+                <Button text="MASUK" onAction="#onLogin" maxWidth="Infinity"
+                        HBox.hgrow="ALWAYS" styleClass="btn-primary"/>
+                <Button text="KELUAR" onAction="#onExit" styleClass="btn-ghost"/>
+            </HBox>
+
+            <Hyperlink fx:id="linkDemo" text="Lihat akun pengujian (demo)" onAction="#onDemo"/>
+        </VBox>
+    </VBox>
+</StackPane>
